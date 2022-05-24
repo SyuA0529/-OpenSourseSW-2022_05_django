@@ -1,0 +1,43 @@
+{% load filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>시험 출제</title>
+</head>
+<body>
+    <form>
+        <div>
+            <strong>시험 출제</strong>
+            <div>
+                시험지 과목 : <input type = "text" name = "exam_type", id = "exam_type", size = "10"> <br> 
+                시험지 제목 : <input type = "text" name = "exam_name", id = "exam_name", size = "20"> <br> 
+                출제자 이름 : <input type = "text" name = "exam_register", id = "exam_register", size = "20"> <br> 
+            </div>
+        </div>
+    </form>
+    <button id="submit">시험 생성</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#submit").on("click", function(){
+            var data = {
+                type : document.getElementById("exam_type").value,
+                name : document.getElementById("exam_name").value, 
+                register : document.getElementById("exam_register").value, 
+            }
+
+            $.ajax({
+                url : "/create-exam/submit_exam_info",
+                method : "POST",
+                data : JSON.stringify(data),
+                success:function (result) {
+                    location.href = "/create-exam/" +result.exam_id+"/1";
+                },
+                error : function() {
+                    alert("제출에 실패했습니다.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

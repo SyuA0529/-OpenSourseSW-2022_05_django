@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>체점</title>
+</head>
+<body>
+    <form>
+        <div>
+            시험 선택
+            {% for cur_exam in exam %}
+            <div>
+            <A href = "/grade-exam/{{cur_exam.id}}" target = "_self", onfocus="this.blur()", onclick="return confirm_alert(this);"> [{{cur_exam.type}}] {{cur_exam.name}} by {{cur_exam.register}}
+            </A>
+            <div>
+            {% endfor %}
+        </div>
+    </form>
+    <script type="text/javascript">
+        function confirm_alert(node) {
+            alert('채점완료')
+        }
+        </script>
+</body>
+</html>

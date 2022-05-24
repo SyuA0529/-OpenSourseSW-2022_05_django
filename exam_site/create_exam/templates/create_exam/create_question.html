@@ -1,0 +1,87 @@
+{% load filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>문항 출제</title>
+</head>
+<body>
+    <form>
+        <div>
+            <strong>문제 출제</strong>
+            <div>
+                <label>{{ question_id }}번 문제 제목 : <input type = "text" name = "question{{questoin_id}}_subject", id = "question{{question_id}}_subject", size = "20"> <br> </label>
+                <label>{{ question_id }}번 문제 내용 : <input type = "text" name = "question{{questoin_id}}_contents", id = "question{{question_id}}_contents", size = "20"> <br> </label> <br>
+                <div>
+                    {%for i in 6|ranges%}
+                    <label>{{ i }}번 문항 내용 : <input type = "text" name = "question{{question_id}}_{{i}}", id = "question{{question_id}}_{{i}}", size = "10"> <br> </label>
+                    {%endfor%}
+                    <br> <label>{{ question_id }}번 문제 정답 번호 : <input type = "text" name = "question{{question_id}}_ans", id = "question{{question_id}}_ans", size = "10"> <br> </label>
+                </div>
+            </div>
+        </div>
+    </form>
+    <button id="submit1">다음 문항</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#submit1").on("click", function(){
+            var q = [];
+            for(var i=1; i < 6; i++) {
+                q[i-1]=document.getElementById("question"+{{question_id}}+"_"+i).value;
+            }
+
+            var data = {
+                exam_id : {{exam_id}},
+                question_id : {{question_id}},
+                subject : document.getElementById("question"+{{question_id}}+"_subject").value,
+                contents : document.getElementById("question"+{{question_id}}+"_contents").value, 
+                question : q,
+                answer : document.getElementById("question"+{{question_id}}+"_ans").value,
+            }
+
+            $.ajax({
+                url : "/create-exam/submit_question",
+                method : "POST",
+                data : JSON.stringify(data),
+                success:function (result) {
+                    if(result.message == "SUCCESS") {
+                        location.href=({{question_id}} + 1);
+                    }
+
+                    else {
+                        alert("에러로 인하여 초기 화면으로 돌아갑니다");
+                        location.href="/";
+                    }
+                },
+                error : function() {
+                    alert("제출에 실패했습니다.");
+                }
+            });
+        });
+    </script>
+    <button id="submit2">종료</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#submit2").on("click", function(){
+            $.ajax({
+                url : "/create-exam/submit_question",
+                method : "POST",
+                success:function (result) {
+                    if(result.message == "SUCCESS") {
+                        alert("출제 완료");
+                        location.href="/";
+                    }
+
+                    else {
+                        alert("에러로 인하여 초기 화면으로 돌아갑니다");
+                        location.href="/";
+                    }
+                },
+                error : function() {
+                    alert("제출에 실패했습니다.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

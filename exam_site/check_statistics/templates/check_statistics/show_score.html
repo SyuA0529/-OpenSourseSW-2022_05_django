@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>시험 결과</title>
+</head>
+<body>
+    <form>
+        <div>
+            <strong>[{{ exam_info.type }}] {{ exam_info.name}} by {{ exam_info.register }} </strong> <br> <br>
+            {% for score in score_list %}
+            <div>
+                {{score.user_name}} : {{score.score}} / {{max_score}}
+            </div>
+            {% endfor %}
+            <br>
+            전체 평균 : {{avg}} / {{max_score}}
+        </div><br>
+    </form>
+    <button id="submit">확인 종료</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#submit").on("click", function(){
+            location.href = '/';
+        });
+    </script>
+</body>
+</html>
