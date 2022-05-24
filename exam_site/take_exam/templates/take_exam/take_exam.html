@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>시험응시</title>
+</head>
+<body>
+    <form>
+        <div>
+            {{ exam.name }} <br>
+            <div>
+                <label>응시자 이름 : <input type = "text" name = "user_id", id = "user_id", size = "20"> </label> <br> <br> 
+            </div>
+            {% for detail in exam.examdetail_set.all %}
+            <div>
+                <strong>{{ detail.exam_num }}.  {{ detail.exam_subject }}</strong><br>
+                {{ detail.exam_contents}} <br>
+            </div>
+            <div>
+                {% for question in detail.examquestion_set.all %}
+                    <label><input type="radio" id="question_{{detail.exam_num}}_{{question.question_num}}" name="question_{{detail.exam_num}}" value="{{ question.question_num }}">{{ question.question_num }} {{ question.question_contents }}</label> <br>
+                {% endfor %}
+                <br>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+    <button id="submit">제출</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#submit").on("click", function(){
+            var data = {
+                user_id : document.getElementById("user_id").value,
+                exam_id : {{ exam.id }},
+                answer : "",
+            }
+
+            for(var i=0;i<{{ exam.examdetail_set.all|length }};i++) {
+                if(!$("input[name='question_"+(i+1)+"']").is(":checked")) {
+                    alert((i+1)+"번 문제의 정답을 입력해주세요.");
+                    return false;
+                }
+                var answer = $("input[name='question_"+(i+1)+"']:checked").val();
+                data.answer += answer+",";
+            }
+
+            $.ajax({
+                url : "/take-exam/submit",
+                method : "POST",
+                data : JSON.stringify(data),
+                success:function (result) {
+                    if(result.message == "EXIST") {
+                        alert("이미 응시하셨습니다")
+                    }
+
+                    else {
+                        alert("응시가 완료되었습니다");
+                    }
+                    location.href="/";
+                },
+                error : function() {
+                    alert("제출에 실패했습니다.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
