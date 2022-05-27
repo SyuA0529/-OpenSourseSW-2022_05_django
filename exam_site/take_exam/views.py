@@ -34,7 +34,7 @@ def show_exam(request, exam_id):
 def submit_exam(request):
     request = json.loads(request.body)
     try :
-        exam_submit = ExamSubmit.objects.filter(user_name=request['user_id'])
+        exam_submit = ExamSubmit.objects.filter(exam_id=request['exam_id'], user_name=request['user_id'])
         exam_submit[0]
         return JsonResponse({'message':'EXIST'}, status = 200)
     
